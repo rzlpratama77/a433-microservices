@@ -15,7 +15,7 @@ echo -e "\nTagging the Docker image to match the GitHub Container Registry forma
 docker tag $packageName ghcr.io/$packageName
 
 # Menampilkan daftar image yang ada di lokal
-echo -e "nListing local Docker images:"
+echo -e "\nListing local Docker images:"
 docker images
 
 # Masuk ke GitHub Container Registry
