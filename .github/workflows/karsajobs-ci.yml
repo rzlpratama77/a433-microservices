@@ -1,0 +1,45 @@
+# Workflow GitHub Actions
+name: KarsaJobs Backend (API) CI
+
+# Menentukan event yang akan memicu workflow setiap ada push baru ke branch `karsajobs`
+on:
+  push:
+    branches:
+      - karsajobs
+
+# Mendefinisikan pekerjaan (job) yang akan dijalankan
+jobs:
+  karsajobs-ci:
+    name: Build-Push
+
+    # Menentukan environment yang digunakan
+    environment: karsajobs-prod
+
+    # Menggunakan Ubuntu versi terbaru untuk menjalankan job
+    runs-on: ubuntu-latest
+
+    # Menyusun urutan langkah kerja
+    steps:
+
+      # Melakukan checkout terhadap repository agar bisa diakses oleh workflow
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Menggunakan Hadolint untuk melakukan linting pada berkas Dockerfile
+      - name: Run Hadolint untuk linting Dockerfile
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: "Dockerfile"
+
+      # Menjalankan unit test untuk kode backend
+      - name: Run Unit Test
+        run: go test -v -short --count=1 $(go list ./...)
+
+      # Melakukan build dan push image Docker
+      - name: Build dan Push Docker Image
+        env:
+          # Token akses pribadi yang disimpan di secrets repository GitHub
+          GHCR_PAT_TOKEN: ${{ secrets.GHCR_PAT_TOKEN }}
+        run: |
+          export GHCR_PAT_TOKEN=$GHCR_PAT_TOKEN
+          bash ./build_push_image_karsajobs.sh
