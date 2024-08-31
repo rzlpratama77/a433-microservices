@@ -1,0 +1,28 @@
+apiVersion: apps/v1                                         # versi API Kubernetes yang digunakan
+kind: Deployment                                            # jenis resource yang dibuat, yaitu Deployment
+metadata:                                                   # informasi untuk mengidentifikasi objek
+  labels:                                                   # label untuk menandai dan mengelompokkan objek
+    app: karsajobs-ui
+    tier: frontend
+  name: karsajobs-ui                                        # nama untuk Deployment ini
+spec:                                                       # spesifikasi untuk Deployment
+  replicas: 1                                               # jumlah replika Pod yang akan dibuat
+  selector:                                                 # menghubungkan Deployment dengan Pod berdasarkan label tertentu
+    matchLabels:
+      app: karsajobs-ui
+      tier: frontend
+  template:                                                 # template untuk membuat Pod yang akan dikelola oleh Deployment
+    metadata:                                               # informasi untuk mengidentifikasi Pod
+      labels:                                               # label untuk menandai Pod
+        app: karsajobs-ui
+        tier: frontend
+    spec:                                                   # spesifikasi untuk Pod
+      containers:                                           # konfigurasi untuk kontainer dalam Pod
+      - name: karsajobs-ui                                  # nama kontainer dalam Pod
+        image: ghcr.io/rzlpratama77/karsajobs-ui:latest     # image Docker yang akan digunakan
+        imagePullPolicy: IfNotPresent                       # atur untuk mengambil image hanya jika belum ada di lokal
+        ports:                                              # port yang digunakan oleh kontainer
+        - containerPort: 8000
+        env:                                                # definisi variabel lingkungan (environment variables) yang digunakan
+        - name: VUE_APP_BACKEND
+          value: "http://108.137.48.197:30011"              # alamat IP dan port Node dari aplikasi backend

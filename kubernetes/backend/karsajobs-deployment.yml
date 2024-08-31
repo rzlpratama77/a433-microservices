@@ -1,0 +1,40 @@
+apiVersion: apps/v1                                     # versi API Kubernetes yang digunakan
+kind: Deployment                                        # jenis resource yang dibuat, yaitu Deployment
+metadata:                                               # informasi untuk mengidentifikasi objek
+  labels:                                               # label untuk menandai dan mengelompokkan objek
+    app: karsajobs-be
+    tier: backend
+  name: karsajobs-be                                    # nama untuk Deployment ini
+spec:                                                   # spesifikasi untuk Deployment
+  replicas: 1                                           # jumlah replika Pod yang akan dibuat
+  selector:                                             # menghubungkan Deployment dengan Pod berdasarkan label tertentu
+    matchLabels:
+      app: karsajobs-be
+      tier: backend
+  template:                                             # template untuk membuat Pod yang akan dikelola oleh Deployment
+    metadata:                                           # informasi untuk mengidentifikasi Pod
+      labels:                                           # label untuk menandai Pod
+        app: karsajobs-be
+        tier: backend
+    spec:                                               # spesifikasi untuk Pod
+      containers:                                       # konfigurasi untuk kontainer dalam Pod
+      - name: karsajobs                                 # nama kontainer dalam Pod
+        image: ghcr.io/rzlpratama77/karsajobs:latest    # image Docker yang akan digunakan
+        imagePullPolicy: IfNotPresent                   # atur untuk mengambil image hanya jika belum ada di lokal
+        ports:                                          # port yang digunakan oleh kontainer
+        - containerPort: 8080
+        env:                                            # definisi variabel lingkungan (environment variables) yang digunakan
+        - name: APP_PORT                                # variabel APP_PORT dengan nilai 8080
+          value: "8080"
+        - name: MONGO_HOST                              # variabel MONGO_HOST dengan nilai yang menunjuk ke MongoDB Service
+          value: karsajobs-db
+        - name: MONGO_USER                              # variabel MONGO_USER dengan nilai dari Secret MongoDB (MONGO_ROOT_USERNAME)
+          valueFrom:
+            secretKeyRef:
+              name: karsajobs-db-secret
+              key: MONGO_ROOT_USERNAME
+        - name: MONGO_PASS                              # variabel MONGO_PASS dengan nilai dari Secret MongoDB (MONGO_ROOT_PASSWORD)
+          valueFrom:
+            secretKeyRef:
+              name: karsajobs-db-secret
+              key: MONGO_ROOT_PASSWORD

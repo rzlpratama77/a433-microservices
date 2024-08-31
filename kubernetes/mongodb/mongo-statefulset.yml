@@ -1,0 +1,53 @@
+apiVersion: apps/v1                                               # versi API Kubernetes yang digunakan
+kind: StatefulSet                                                 # jenis resource yang dibuat, yaitu StatefulSet
+metadata:                                                         # informasi untuk mengidentifikasi objek
+  name: karsajobs-db                                              # nama untuk StatefulSet ini
+  labels:                                                         # label untuk menandai dan mengelompokkan objek
+    app: karsajobs-db
+    tier: database
+spec:                                                             # spesifikasi untuk StatefulSet
+  serviceName: karsajobs-db                                       # nama Service yang digunakan oleh StatefulSet
+  replicas: 1                                                     # jumlah replika Pod yang akan dibuat
+  minReadySeconds: 10                                             # waktu minimum yang diperlukan agar Pod dianggap siap, yaitu 10 detik
+  selector:                                                       # menghubungkan StatefulSet dengan Pod berdasarkan label tertentu
+    matchLabels:
+      app: karsajobs-db
+      tier: database
+  template:                                                       # template untuk membuat Pod yang dikelola oleh StatefulSet
+    metadata:                                                     # informasi untuk mengidentifikasi Pod
+      labels:                                                     # label untuk menandai Pod
+        app: karsajobs-db
+        tier: database
+    spec:                                                         # spesifikasi untuk Pod
+      terminationGracePeriodSeconds: 10                           # waktu tenggang sebelum menghentikan Pod, yaitu 10 detik
+      containers:                                                 # konfigurasi untuk kontainer dalam Pod
+      - name: mongo                                               # nama kontainer dalam Pod
+        image: mongo:latest                                       # image Docker yang digunakan untuk kontainer
+        imagePullPolicy: IfNotPresent                             # mengatur agar image hanya di-pull jika belum ada di lokal
+        ports:                                                    # port yang digunakan oleh kontainer
+        - containerPort: 27017
+        env:                                                      # mendefinisikan variabel lingkungan yang digunakan
+        - name: MONGO_INITDB_ROOT_USERNAME_FILE
+          value: /etc/mongo-credentials/MONGO_ROOT_USERNAME
+        - name: MONGO_INITDB_ROOT_PASSWORD_FILE
+          value: /etc/mongo-credentials/MONGO_ROOT_PASSWORD
+        volumeMounts:                                             # mengatur volume mount dan jalur tempat mount
+        - name: mongo-persist-vol
+          mountPath: /data/db
+        - name: mongo-config-vol
+          mountPath: /config
+        - name: mongo-secret-vol
+          mountPath: /etc/mongo-credentials
+      volumes:                                                    # mengatur volume penyimpanan data yang digunakan oleh Pod
+      - name: mongo-persist-vol
+        persistentVolumeClaim:
+          claimName: karsajobs-db-pvc                             # nama PersistentVolumeClaim yang digunakan
+      - name: mongo-config-vol
+        configMap:
+          name: karsajobs-db-config                               # nama ConfigMap yang digunakan
+          items: 
+          - key: mongo.conf
+            path: mongo.conf
+      - name: mongo-secret-vol
+        secret:
+          secretName: karsajobs-db-secret                         # nama Secret yang digunakan
