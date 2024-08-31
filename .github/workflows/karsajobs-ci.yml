@@ -1,5 +1,5 @@
 # Workflow GitHub Actions
-name: KarsaJobs Backend (API) CI
+name: KarsaJobs CI
 
 # Menentukan event yang akan memicu workflow setiap ada push baru ke branch `karsajobs`
 on:
