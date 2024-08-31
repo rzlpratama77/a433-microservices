@@ -1,14 +1,14 @@
 apiVersion: v1          # versi API Kubernetes yang digunakan
 kind: Service           # jenis resource yang dibuat, yaitu Service
 metadata:               # informasi untuk mengidentifikasi objek
-  name: karsajobs-db    # nama untuk Service ini
+  name: karsajobs-mongodb    # nama untuk Service ini
   labels:               # label untuk menandai dan mengelompokkan objek
-    app: karsajobs-db
+    app: karsajobs-mongodb
     tier: database
 spec:                   # spesifikasi untuk Service
   clusterIP: None       # membuat headless service sehingga tidak mengalokasikan IP di dalam Cluster
   selector:             # menghubungkan Service dengan Pod yang memiliki label tertentu
-    app: karsajobs-db
+    app: karsajobs-mongodb
     tier: database
   ports:                # konfigurasi port yang akan diekspos oleh Service
   - port: 27017         # port yang digunakan di dalam Cluster

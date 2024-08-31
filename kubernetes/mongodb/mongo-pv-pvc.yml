@@ -1,7 +1,7 @@
 apiVersion: v1                # versi API Kubernetes yang digunakan
 kind: PersistentVolume        # jenis resource yang dibuat, yaitu PersistentVolume
 metadata:                     # informasi untuk mengidentifikasi objek
-  name: karsajobs-db-pv       # nama untuk PersistentVolume ini
+  name: karsajobs-mongodb-pv       # nama untuk PersistentVolume ini
   labels:                     # label untuk menandai dan mengelompokkan objek
     type: local               # tipe volume lokal
 spec:                         # spesifikasi untuk PersistentVolume
@@ -16,7 +16,7 @@ spec:                         # spesifikasi untuk PersistentVolume
 apiVersion: v1                # versi API Kubernetes yang digunakan
 kind: PersistentVolumeClaim   # jenis resource yang dibuat, yaitu PersistentVolumeClaim
 metadata:                     # informasi untuk mengidentifikasi objek
-  name: karsajobs-db-pvc      # nama untuk PersistentVolumeClaim ini
+  name: karsajobs-mongodb-pvc      # nama untuk PersistentVolumeClaim ini
 spec:                         # spesifikasi untuk PersistentVolumeClaim
   storageClassName: manual    # nama storage class yang digunakan adalah 'manual'
   accessModes:                # mode akses baca-tulis hanya satu Node pada satu waktu

@@ -1,0 +1,8 @@
+link github hasil fork
+https://github.com/rzlpratama77/a433-microservices
+
+link package karsajobs backend
+https://github.com/users/rzlpratama77/packages/container/package/karsajobs
+
+link package karsajobs frontend
+https://github.com/users/rzlpratama77/packages/container/package/karsajobs-ui

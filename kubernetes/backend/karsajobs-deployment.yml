@@ -27,14 +27,14 @@ spec:                                                   # spesifikasi untuk Depl
         - name: APP_PORT                                # variabel APP_PORT dengan nilai 8080
           value: "8080"
         - name: MONGO_HOST                              # variabel MONGO_HOST dengan nilai yang menunjuk ke MongoDB Service
-          value: karsajobs-db
+          value: karsajobs-mongodb
         - name: MONGO_USER                              # variabel MONGO_USER dengan nilai dari Secret MongoDB (MONGO_ROOT_USERNAME)
           valueFrom:
             secretKeyRef:
-              name: karsajobs-db-secret
+              name: karsajobs-mongodb-secret
               key: MONGO_ROOT_USERNAME
         - name: MONGO_PASS                              # variabel MONGO_PASS dengan nilai dari Secret MongoDB (MONGO_ROOT_PASSWORD)
           valueFrom:
             secretKeyRef:
-              name: karsajobs-db-secret
+              name: karsajobs-mongodb-secret
               key: MONGO_ROOT_PASSWORD
