@@ -1,8 +1,7 @@
 # GitHub Actions Workflow
-name: KarsaJobs Frontend (UI) CI
+name: KarsaJobs UI CI
 
-# Menentukan event yang akan memicu workflow
-# yaitu setiap kali ada push ke branch `karsajobs-ui`
+# Menentukan event yang akan memicu workflow setiap kali ada push ke branch `karsajobs-ui`
 on:
   push:
     branches:
