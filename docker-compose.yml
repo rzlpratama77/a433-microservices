@@ -15,7 +15,7 @@ services:
       - rabbitmq-svc
     # Menentukan jaringan yang digunakan oleh container
     networks:
-      - rabbitmq-net
+      - rabbitmq-network
     # Mengatur agar container selalu restart jika terhenti
     restart: always
     # Mendefinisikan variabel lingkungan untuk URL RabbitMQ
@@ -33,7 +33,7 @@ services:
       - rabbitmq-svc
     # Menentukan jaringan yang digunakan oleh container
     networks:
-      - rabbitmq-net
+      - rabbitmq-network
     # Mengatur agar container selalu restart jika terhenti
     restart: always
     # Mendefinisikan variabel lingkungan untuk URL RabbitMQ
@@ -55,11 +55,11 @@ services:
       - ~/.docker/rabbitmq/log/:/var/log/rabbitmq/
     # Menentukan jaringan yang digunakan oleh container
     networks:
-      - rabbitmq-net
+      - rabbitmq-network
     # Mengatur agar container selalu restart jika terhenti
     restart: always
 
 # Mendefinisikan jaringan dengan tipe bridge network
 networks:
-  rabbitmq-net:
+  rabbitmq-network:
     driver: bridge

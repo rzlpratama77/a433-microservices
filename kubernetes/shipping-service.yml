@@ -44,4 +44,4 @@ spec:                                                                     # Spes
               name: rabbitmq
               key: rabbitmq-password
         - name: AMQP_URL                                                  # URL untuk menghubungkan ke RabbitMQ
-          value: "amqp://user:$(AMQP_PASSWORD)@rabbitmq-headless:5672/"
+          value: "amqp://guest:$(AMQP_PASSWORD)@rabbitmq-headless:5672/"
