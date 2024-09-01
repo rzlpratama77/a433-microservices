@@ -1,0 +1,65 @@
+# Menggunakan versi Docker Compose 3.8
+version: '3.8'
+
+# Mendefinisikan services
+services:
+
+  order-svc:
+    # Menggunakan image dari GitHub Container Registry
+    image: ghcr.io/rzlpratama77/order-service:latest
+    # Memetakan port dari container ke host
+    ports:
+      - 3000:3000
+    # Service ini bergantung pada RabbitMQ
+    depends_on:
+      - rabbitmq-svc
+    # Menentukan jaringan yang digunakan oleh container
+    networks:
+      - rabbitmq-net
+    # Mengatur agar container selalu restart jika terhenti
+    restart: always
+    # Mendefinisikan variabel lingkungan untuk URL RabbitMQ
+    environment:
+      AMQP_URL: "amqp://guest:guest@rabbitmq-local:5672/"
+
+  shipping-svc:
+    # Menggunakan image dari GitHub Container Registry
+    image: ghcr.io/rzlpratama77/shipping-service:latest
+    # Memetakan port dari container ke host
+    ports:
+      - 3001:3001
+    # Service ini bergantung pada RabbitMQ
+    depends_on:
+      - rabbitmq-svc
+    # Menentukan jaringan yang digunakan oleh container
+    networks:
+      - rabbitmq-net
+    # Mengatur agar container selalu restart jika terhenti
+    restart: always
+    # Mendefinisikan variabel lingkungan untuk URL RabbitMQ
+    environment:
+      AMQP_URL: "amqp://guest:guest@rabbitmq-local:5672/"
+
+  rabbitmq-svc:
+    # Menggunakan image RabbitMQ dari Docker Hub
+    image: rabbitmq:3.11-management
+    # Menentukan nama container
+    container_name: 'rabbitmq-local'
+    # Memetakan port dari container ke host
+    ports:
+      - 5672:5672
+      - 15672:15672
+    # Memetakan volume untuk menyimpan data dan log RabbitMQ
+    volumes:
+      - ~/.docker/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker/rabbitmq/log/:/var/log/rabbitmq/
+    # Menentukan jaringan yang digunakan oleh container
+    networks:
+      - rabbitmq-net
+    # Mengatur agar container selalu restart jika terhenti
+    restart: always
+
+# Mendefinisikan jaringan dengan tipe bridge network
+networks:
+  rabbitmq-net:
+    driver: bridge

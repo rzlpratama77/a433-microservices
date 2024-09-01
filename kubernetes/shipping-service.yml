@@ -1,0 +1,47 @@
+apiVersion: v1                                                            # Versi API Kubernetes yang digunakan
+kind: Service                                                             # Jenis sumber daya adalah Service
+metadata:                                                                 # Metadata untuk identifikasi objek
+  name: shipping-service                                                  # Nama Service
+  labels:                                                                 # Label untuk mengidentifikasi Service
+    app: shipping-service
+    tier: consumer
+spec:                                                                     # Spesifikasi Service
+  selector:                                                               # Selector untuk mengasosiasikan Pod yang memiliki label tertentu
+    app: shipping-service
+    tier: consumer
+  ports:                                                                  # Spesifikasi port yang diekspos oleh Service
+  - name: http-nodejs
+    port: 3001                                                            # Port yang diekspos oleh Service
+---
+apiVersion: apps/v1                                                       # Versi API Kubernetes yang digunakan untuk Deployment
+kind: Deployment                                                          # Jenis sumber daya adalah Deployment
+metadata:                                                                 # Metadata untuk identifikasi objek
+  name: shipping-service                                                  # Nama Deployment
+  labels:                                                                 # Label untuk mengidentifikasi Deployment
+    app: shipping-service
+    tier: consumer
+spec:                                                                     # Spesifikasi Deployment
+  replicas: 1                                                             # Jumlah replika Pod yang akan dibuat
+  selector:                                                               # Selector untuk mengasosiasikan Pod yang dikelola oleh Deployment ini
+    matchLabels:
+      app: shipping-service
+      tier: consumer
+  template:                                                               # Template untuk membuat Pod baru
+    metadata:                                                             # Metadata untuk identifikasi Pod
+      labels:                                                             # Label untuk Pod yang dibuat oleh Deployment ini
+        app: shipping-service
+        tier: consumer
+    spec:                                                                 # Spesifikasi Pod
+      containers:                                                         # Daftar kontainer dalam Pod
+      - name: shipping-service                                            # Nama kontainer
+        image: ghcr.io/rzlpratama77/shipping-service:latest               # Image Docker yang digunakan
+        ports:                                                            # Port yang digunakan oleh kontainer
+        - containerPort: 3001
+        env:                                                              # Definisi variabel environment untuk kontainer
+        - name: AMQP_PASSWORD                                             # Mengambil nilai password dari secret
+          valueFrom:
+            secretKeyRef:
+              name: rabbitmq
+              key: rabbitmq-password
+        - name: AMQP_URL                                                  # URL untuk menghubungkan ke RabbitMQ
+          value: "amqp://user:$(AMQP_PASSWORD)@rabbitmq-headless:5672/"

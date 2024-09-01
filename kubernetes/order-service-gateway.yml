@@ -1,0 +1,33 @@
+apiVersion: networking.istio.io/v1alpha3  # Versi API yang digunakan oleh Istio
+kind: Gateway                             # Jenis objek yang dibuat adalah Gateway
+metadata:                                 # Metadata untuk mengidentifikasi objek
+  name: order-service-gateway             # Nama Gateway ini adalah 'order-service-gateway'
+spec:                                     # Spesifikasi untuk Gateway
+  selector:                               # Selector untuk memilih resource yang sesuai dengan label tertentu
+    istio: ingressgateway                 # Menggunakan Istio ingress gateway
+  servers:                                # Konfigurasi server untuk Gateway
+  - port:                                 # Port yang digunakan adalah 80 dengan protokol HTTP
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:                                # Menerima lalu lintas dari host manapun
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3  # Versi API yang digunakan oleh Istio
+kind: VirtualService                      # Jenis objek yang dibuat adalah VirtualService
+metadata:                                 # Metadata untuk mengidentifikasi objek
+  name: order-service-vs                  # Nama VirtualService ini adalah 'order-service-vs'
+spec:                                     # Spesifikasi untuk VirtualService
+  hosts:                                  # Menerima permintaan dari host manapun
+  - "*"
+  gateways:                               # Merujuk pada Gateway yang dibuat sebelumnya
+  - order-service-gateway
+  http:                                   # Konfigurasi untuk lalu lintas HTTP
+  - match:                                # Mencocokkan URL yang mengandung path '/order'
+    - uri:
+        exact: /order
+    route:                                # Konfigurasi rute untuk permintaan
+    - destination:                        # Tujuan rute permintaan adalah 'order-service' pada port 3000
+        host: order-service
+        port:
+          number: 3000
